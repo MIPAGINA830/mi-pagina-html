@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>CRUD RUT Google Sheets</title>
+
+<style>
+body{font-family:Arial;background:#f2f2f2}
+form{background:#fff;padding:20px;width:420px;margin:auto;margin-top:30px}
+input,textarea,button{width:100%;padding:8px;margin:5px 0}
+button{cursor:pointer}
+</style>
+</head>
+
+<body>
+
+<form id="form">
+<input id="rut" placeholder="RUT">
+<input id="nombre" placeholder="Nombre">
+<input id="email" placeholder="Email">
+<input id="telefono" placeholder="Teléfono">
+<input id="direccion" placeholder="Dirección">
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+
+<button type="button" onclick="enviar('ingresar')">Ingresar</button>
+<button type="button" onclick="enviar('buscar')">Buscar</button>
+<button type="button" onclick="enviar('modificar')">Modificar</button>
+<button type="button" onclick="enviar('eliminar')">Eliminar</button>
+<button type="button" onclick="limpiar()">Limpiar</button>
+</form>
+
+<script>
+const URL = "https://script.google.com/macros/s/AKfycby_NGXQUJQqKCyDjMxHwHdIrT_r11Uupl996J2tj_zztF4ilplAJ8YGvgbyD-wZzZJw/exec";
+
+function enviar(accion){
+  fetch(URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      accion: accion,
+      rut: rut.value,
+      nombre: nombre.value,
+      email: email.value,
+      telefono: telefono.value,
+      direccion: direccion.value,
+      descripcion: descripcion.value
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+
+    if(d.rut){
+      rut.value = d.rut;
+      nombre.value = d.nombre;
+      email.value = d.email;
+      telefono.value = d.telefono;
+      direccion.value = d.direccion;
+      descripcion.value = d.descripcion;
+    }
+
+    if(d.mensaje){
+      alert(d.mensaje);
+    }
+  })
+  .catch(e => alert("ERROR FETCH: " + e));
+}
+
+function limpiar(){
+  document.getElementById("form").reset();
+}
+</script>
+
+</body>
+</html>
